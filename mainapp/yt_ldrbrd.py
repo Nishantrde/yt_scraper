@@ -1,7 +1,7 @@
 # Required libraries
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-import re
+
 
 
 def get_data_lk(vid):

@@ -1,4 +1,3 @@
-import json
 import gensim
 import gensim.corpora as corpora
 import spacy

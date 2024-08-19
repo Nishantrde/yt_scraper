@@ -3,7 +3,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import re
 import emoji
-from .analysis_cmts import *
+
 
 def get_data(vid):
     vid_id = vid

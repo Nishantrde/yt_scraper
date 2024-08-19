@@ -8,10 +8,7 @@ def index(request):
     rep_cnt = None
     
     if request.method == "POST":
-        if request.POST.get('anly'):
-            video_id = request.POST.get('video-id')
-            lda_html_content = get_data(video_id)
-            return render(request, "index.html", {"lda_html_content": lda_html_content})
+        
         if request.POST.get('lb'):
             video_id = request.POST.get('video-id')
             lrbd = list(get_data_lk(video_id))[:10]

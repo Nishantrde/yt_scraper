@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Leaderboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a;
+            color: #eaeaea;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #2b110c, #0e0907);
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            font-size: 3em;
+            letter-spacing: 1.5px;
+            border: 4px solid #130805;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        h1:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 99, 71, 0.6), rgba(255, 69, 0, 0.6));
+            z-index: -1;
+            transform: skewX(-20deg) translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        h1:hover:before {
+            transform: skewX(-20deg) translateX(100%);
+        }
+
+        .container {
+            padding: 40px 20px;
+        }
+
+        .chart-container {
+            background: #262626;
+            border-radius: 15px;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 900px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: #333;
+            border-radius: 15px;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #444;
+        }
+
+        .profile-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .profile-card img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ff6347;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-right: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .profile-card img:hover {
+            box-shadow: 0 6px 20px rgba(255, 99, 71, 0.8);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            color: #eaeaea;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+            color: #ff6347;
+            font-size: 1.4em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .profile-info p {
+            margin: 5px 0 0;
+            font-size: 1em;
+            color: #ccc;
+        }
+
+        .profile-info .likes {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #ff6347;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Top Liked Comments</h1>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="likesChart"></canvas>
+        </div>
+        {% for items in lrbd %}
+        <div class="profile-card">
+            <img src="{{items.1.snippet.authorProfileImageUrl}}" alt="Author Profile Picture">
+            <div class="profile-info">
+                <h3>{{items.0}}</h3>
+                <p>Comment: {{items.1.snippet.textDisplay}}</p>
+                <p class="likes">👍 Likes: {{items.1.likes}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h1>Top Replied Comments</h1>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="repliesChart"></canvas>
+        </div>
+        {% for items in rep_cnt %}
+        <div class="profile-card">
+            <img src="{{items.1.snippet.authorProfileImageUrl}}" alt="Author Profile Picture">
+            <div class="profile-info">
+                <h3>{{items.0}}</h3>
+                <p>Comment: {{items.1.snippet.textDisplay}}</p>
+                <p class="likes">💬 Replies: {{items.1.ReplyCount}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <script>
+        const likesData = {
+            labels: [{% for items in lrbd %}'{{ items.0 }}',{% endfor %}],
+            datasets: [{
+                label: 'Likes',
+                data: [{% for items in lrbd %}{{ items.1.likes }},{% endfor %}],
+                backgroundColor: 'rgba(255, 99, 71, 0.5)',
+                borderColor: 'rgba(255, 99, 71, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const repliesData = {
+            labels: [{% for items in rep_cnt %}'{{ items.0 }}',{% endfor %}],
+            datasets: [{
+                label: 'Replies',
+                data: [{% for items in rep_cnt %}{{ items.1.ReplyCount }},{% endfor %}],
+                backgroundColor: 'rgba(70, 130, 180, 0.5)',
+                borderColor: 'rgba(70, 130, 180, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const configLikes = {
+            type: 'bar',
+            data: likesData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        };
+
+        const configReplies = {
+            type: 'bar',
+            data: repliesData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        };
+
+        const likesChart = new Chart(
+            document.getElementById('likesChart'),
+            configLikes
+        );
+
+        const repliesChart = new Chart(
+            document.getElementById('repliesChart'),
+            configReplies
+        );
+    </script>
+</body>
+</html>

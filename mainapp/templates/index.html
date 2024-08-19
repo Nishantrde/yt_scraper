@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video ID Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    
+    {% if lda_html_content %}
+    <div id="lda-vis-container">
+
+        {{ lda_html_content|safe }}
+        
+    </div>
+
+    {% else %}
+    
+    <div class="container">
+        <h1>YouTube Video ID Extractor</h1>
+        <form id="yt-form" action="/" method="post">
+            {% csrf_token %}
+            <label for="yt-url">Enter YouTube URL:</label>
+            <input type="text" id="yt-url" name="yt-url" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" required>
+            
+            <div id="result">
+                <p>Video ID: <span id="display-video-id"></span></p>
+                <input type="hidden" id="video-id" name="video-id">
+            </div>
+
+            <button type="submit" id="anly" name="anly" value="on">Analysis the comments</button><br><br>
+            <button type="submit" id="lb" name="lb" value="on">See Top comments</button>
+            
+        </form>
+    </div>
+
+{% endif %}
+
+
+
+    <script>
+        document.getElementById('yt-form').addEventListener('submit', function(event) {
+    // event.preventDefault(); // Comment this out temporarily
+
+    const url = document.getElementById('yt-url').value;
+    const videoId = extractVideoID(url);
+
+    if (videoId) {
+        document.getElementById('display-video-id').textContent = videoId;
+        document.getElementById('video-id').value = videoId;
+
+        // Submit the form after setting the video ID
+        event.target.submit();
+    } else {
+        document.getElementById('display-video-id').textContent = "Invalid URL";
+    }
+});
+
+
+        function extractVideoID(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+    </script>
+
+</body>
+</html>

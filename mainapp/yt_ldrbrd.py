@@ -1,13 +1,14 @@
 # Required libraries
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from .yt_api import api_key 
 
 
 
 def get_data_lk(vid):
     vid_id = vid
     yt_client = build(
-        "youtube", "v3", developerKey="AIzaSyBStzjdyRbMp68HN9Td2SQTXmI25kKxQoU",
+        "youtube", "v3", developerKey=api_key,
     )
     def gen_data(client, video_id, token = None):
         try:

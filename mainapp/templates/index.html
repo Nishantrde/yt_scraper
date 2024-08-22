@@ -81,8 +81,16 @@
                 <input type="hidden" id="video-id" name="video-id">
             </div>
 
-            <button type="submit" id="lb" name="lb" value="on">See Top comments</button>
+            <button type="submit" id="lb" name="lb" value="on">See Top comments</button><br><br>
+
+           
             
+        </form>
+        <form action="/" method="get">
+            {% csrf_token %}
+
+            <button type="submit" id="mltv" name="mltv" value="on">Analysis multi video comments</button>
+
         </form>
     </div>
 

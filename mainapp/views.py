@@ -36,12 +36,10 @@ def index(request):
             
             return render(request, 'yt_leader_brd.html', {"lrbd": lrbd, "rep_cnt": rep_cnt})
 
-        
-
         if request.POST.get('mltv'):
             video_ids = str(request.POST.get('video-ids'))
             video_ids = video_ids.split(",")
-            u_info = scraper(video_ids)
+            u_info = scraper(video_ids)[0]
 
             # Prepare data for the graph
             user_names = list(u_info.keys())
@@ -51,7 +49,7 @@ def index(request):
                 'labels': user_names,
                 'data': comment_counts,
             }
-            
+
             return render(request, "multi_scraper_view.html", {
                 "u_info": u_info,
                 "graph_data": json.dumps(graph_data)  # Convert graph data to JSON

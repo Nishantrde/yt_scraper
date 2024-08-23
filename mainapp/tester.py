@@ -76,4 +76,4 @@ def scraper(vid):
 
     print(f"Total cmts fetched: {len(comments)}")
 
-    return user_info
+    return [user_info]

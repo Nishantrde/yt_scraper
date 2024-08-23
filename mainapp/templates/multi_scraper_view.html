@@ -155,11 +155,38 @@
             padding-left: 20px;
             margin: 0;
             list-style-type: disc;
+            max-height: 100px; /* Limit the height of the list */
+            overflow: hidden; /* Hide overflow */
+            transition: max-height 0.3s ease;
+        }
+
+        .card-section ul.show-all {
+            max-height: none; /* Remove height restriction when "Show More" is clicked */
         }
 
         .card-section ul li {
             margin-bottom: 8px;
         }
+
+        .show-more-btn {
+    background-color: #e63946; /* Red button */
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Adjust padding to fit text */
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 120px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-size: 14px; /* Ensure text fits within the fixed size */
+}
+
+.show-more-btn:hover {
+    background-color: #c53030; /* Darker red on hover */
+}
+
 
         canvas {
             margin-bottom: 20px;
@@ -174,16 +201,12 @@
 </head>
 <body>
     <div class="container">
-        
-        
         <h1>Comment Activity Graph</h1>
         <canvas id="commentChart" height="150"></canvas>
 
-        
         <h1>User Information</h1>
         {% for user, info in u_info.items %}
         <div class="card">
-            
             <div class="card-header">
                 <img src="{{ info.image_url }}" alt="{{ user }}'s Profile Picture">
                 <h3>{{ user }}</h3>
@@ -192,7 +215,7 @@
             <div class="card-content">
                 <div class="card-section">
                     <h4><i class="fas fa-comments"></i> Comments 💬</h4>
-                    <ul>
+                    <ul class="comment-list">
                         {% for comment in info.comment %}
                         <li>{{ comment }}</li>
                         {% endfor %}
@@ -200,18 +223,41 @@
                 </div>
                 <div class="card-section">
                     <h4><i class="fas fa-thumbs-up"></i> Likes 👍</h4>
-                    <ul>
+                    <ul class="likes-list">
                         {% for like in info.likes %}
                         <li>{{ like }}</li>
                         {% endfor %}
                     </ul>
                 </div>
+                {% if info.comment|length > 3 or info.likes|length > 3 %}
+                <button class="show-more-btn">Show More</button>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
     </div>
 
     <script>
+        // JavaScript to toggle 'Show More' functionality for both comments and likes with a single button
+        document.querySelectorAll('.show-more-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const cardContent = this.closest('.card-content');
+                const commentList = cardContent.querySelector('.comment-list');
+                const likesList = cardContent.querySelector('.likes-list');
+
+                if (commentList.style.maxHeight || likesList.style.maxHeight) {
+                    commentList.style.maxHeight = null;
+                    likesList.style.maxHeight = null;
+                    this.textContent = 'Show More';
+                } else {
+                    commentList.style.maxHeight = commentList.scrollHeight + 'px';
+                    likesList.style.maxHeight = likesList.scrollHeight + 'px';
+                    this.textContent = 'Show Less';
+                }
+            });
+        });
+
+        // Chart.js for displaying the comment activity graph
         var ctx = document.getElementById('commentChart').getContext('2d');
         var graphData = {{ graph_data|safe }};
         

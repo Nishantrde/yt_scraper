@@ -9,12 +9,9 @@
 </head>
 <body>
 
-    
     {% if lda_html_content %}
     <div id="lda-vis-container">
-
         {{ lda_html_content|safe }}
-        
     </div>
 
     {% else %}
@@ -33,41 +30,38 @@
                 <input type="hidden" id="video-id" name="video-id">
             </div>
 
-            <button type="submit" id="lb" name="lb" value="on">See Top comments</button><br><br>
+            <div id="warning">
+                <p>Please note: To see the top comments, the video should have less than 1500 comments.</p>
+            </div>
 
-           
+            <button type="submit" id="lb" name="lb" value="on">See Top comments</button><br><br>
             
         </form>
         <form action="/" method="get">
             {% csrf_token %}
-
             <button type="submit" id="mltv" name="mltv" value="on">Analysis multi video comments</button>
-
         </form>
     </div>
 
-{% endif %}
-
-
+    {% endif %}
 
     <script>
         document.getElementById('yt-form').addEventListener('submit', function(event) {
-    // event.preventDefault(); // Comment this out temporarily
+            // event.preventDefault(); // Comment this out temporarily
 
-    const url = document.getElementById('yt-url').value;
-    const videoId = extractVideoID(url);
+            const url = document.getElementById('yt-url').value;
+            const videoId = extractVideoID(url);
 
-    if (videoId) {
-        document.getElementById('display-video-id').textContent = videoId;
-        document.getElementById('video-id').value = videoId;
+            if (videoId) {
+                document.getElementById('display-video-id').textContent = videoId;
+                document.getElementById('video-id').value = videoId;
 
-        // Submit the form after setting the video ID
-        event.target.submit();
-    } else {
-        document.getElementById('display-video-id').textContent = "Invalid URL";
-    }
-});
-
+                // Submit the form after setting the video ID
+                event.target.submit();
+            } else {
+                document.getElementById('display-video-id').textContent = "Invalid URL";
+            }
+        });
 
         function extractVideoID(url) {
             const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;

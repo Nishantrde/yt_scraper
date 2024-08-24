@@ -11,77 +11,81 @@
 
     <h1>YouTube Video ID Extractor</h1>
 
-<div class="container">
-    
-    <form id="yt-form" action="/" method="post">
-        {% csrf_token %}
-        <label for="yt-url-1">Enter YouTube URL 1:</label>
-        <input type="text" id="yt-url-1" name="yt-url-1" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" >
-        <label for="yt-url-2">Enter YouTube URL 2:</label>
-        <input type="text" id="yt-url-2" name="yt-url-2" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" >
-        <label for="yt-url-3">Enter YouTube URL 3:</label>
-        <input type="text" id="yt-url-3" name="yt-url-3" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" >
-        <label for="yt-url-4">Enter YouTube URL 4:</label>
-        <input type="text" id="yt-url-4" name="yt-url-4" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" >
-        <label for="yt-url-5">Enter YouTube URL 5:</label>
-        <input type="text" id="yt-url-5" name="yt-url-5" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" >
+    <div class="container">
+        
+        <form id="yt-form" action="/" method="post">
+            {% csrf_token %}
+            <label for="yt-url-1">Enter YouTube URL 1:</label>
+            <input type="text" id="yt-url-1" name="yt-url-1" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg">
+            <label for="yt-url-2">Enter YouTube URL 2:</label>
+            <input type="text" id="yt-url-2" name="yt-url-2" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg">
+            <label for="yt-url-3">Enter YouTube URL 3:</label>
+            <input type="text" id="yt-url-3" name="yt-url-3" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg">
+            <label for="yt-url-4">Enter YouTube URL 4:</label>
+            <input type="text" id="yt-url-4" name="yt-url-4" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg">
+            <label for="yt-url-5">Enter YouTube URL 5:</label>
+            <input type="text" id="yt-url-5" name="yt-url-5" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg">
 
-        <!-- Hidden input to send the video IDs to the server -->
-        <input type="hidden" id="video-ids-input" name="video-ids">
+            <!-- Hidden input to send the video IDs to the server -->
+            <input type="hidden" id="video-ids-input" name="video-ids">
 
-        <div id="result">
-            <p>Video IDs:</p>
-            <ul id="video-ids-list"></ul>
-        </div>
-        <input type="hidden" id="mltv" name="mltv" value="on">
-        <button type="submit">Extract Video IDs</button>
-    </form>
-</div>
+            <div id="warning">
+                <p>Please note: To see the top comments, each video should have less than 1500 comments.</p>
+            </div>
 
-<script>
-    document.getElementById('yt-form').addEventListener('submit', function(event) {
-        event.preventDefault();
+            <div id="result">
+                <p>Video IDs:</p>
+                <ul id="video-ids-list"></ul>
+            </div>
+            <input type="hidden" id="mltv" name="mltv" value="on">
+            <button type="submit">Extract Video IDs</button>
+        </form>
+    </div>
 
-        const url1 = document.getElementById('yt-url-1').value;
-        const url2 = document.getElementById('yt-url-2').value;
-        const url3 = document.getElementById('yt-url-3').value;
-        const url4 = document.getElementById('yt-url-4').value;
-        const url5 = document.getElementById('yt-url-5').value;
+    <script>
+        document.getElementById('yt-form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        const videoId1 = extractVideoID(url1);
-        const videoId2 = extractVideoID(url2);
-        const videoId3 = extractVideoID(url3);
-        const videoId4 = extractVideoID(url4);
-        const videoId5 = extractVideoID(url5);
+            const url1 = document.getElementById('yt-url-1').value;
+            const url2 = document.getElementById('yt-url-2').value;
+            const url3 = document.getElementById('yt-url-3').value;
+            const url4 = document.getElementById('yt-url-4').value;
+            const url5 = document.getElementById('yt-url-5').value;
 
-        const videoIds = [videoId1, videoId2, videoId3, videoId4, videoId5].filter(id => id !== null);
+            const videoId1 = extractVideoID(url1);
+            const videoId2 = extractVideoID(url2);
+            const videoId3 = extractVideoID(url3);
+            const videoId4 = extractVideoID(url4);
+            const videoId5 = extractVideoID(url5);
 
-        if (videoIds.length > 0) {
-            // Display the video IDs on the page
-            const videoIdsList = document.getElementById('video-ids-list');
-            videoIdsList.innerHTML = '';
-            videoIds.forEach(id => {
-                const li = document.createElement('li');
-                li.textContent = id;
-                videoIdsList.appendChild(li);
-            });
+            const videoIds = [videoId1, videoId2, videoId3, videoId4, videoId5].filter(id => id !== null);
 
-            // Set the hidden input value to a comma-separated list of video IDs
-            document.getElementById('video-ids-input').value = videoIds.join(',');
+            if (videoIds.length > 0) {
+                // Display the video IDs on the page
+                const videoIdsList = document.getElementById('video-ids-list');
+                videoIdsList.innerHTML = '';
+                videoIds.forEach(id => {
+                    const li = document.createElement('li');
+                    li.textContent = id;
+                    videoIdsList.appendChild(li);
+                });
 
-            // Submit the form
-            event.target.submit();
-        } else {
-            document.getElementById('video-ids-list').innerHTML = '<li>No valid video IDs found</li>';
+                // Set the hidden input value to a comma-separated list of video IDs
+                document.getElementById('video-ids-input').value = videoIds.join(',');
+
+                // Submit the form
+                event.target.submit();
+            } else {
+                document.getElementById('video-ids-list').innerHTML = '<li>No valid video IDs found</li>';
+            }
+        });
+
+        function extractVideoID(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
         }
-    });
-
-    function extractVideoID(url) {
-        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        const match = url.match(regex);
-        return match ? match[1] : null;
-    }
-</script>
+    </script>
 
 </body>
 </html>

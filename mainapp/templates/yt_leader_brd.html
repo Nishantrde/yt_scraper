@@ -42,7 +42,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 99, 71, 0.6), rgba(255, 69, 0, 0.6));
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.6), rgba(139, 0, 0, 0.6)); /* Changed to red */
             z-index: -1;
             transform: skewX(-20deg) translateX(-100%);
             transition: transform 0.5s ease;
@@ -95,7 +95,7 @@
         }
 
         .profile-card img:hover {
-            box-shadow: 0 6px 20px rgba(255, 99, 71, 0.8);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.8); /* Changed to red */
         }
 
         .profile-info {
@@ -172,8 +172,8 @@
             datasets: [{
                 label: 'Likes',
                 data: [{% for items in lrbd %}{{ items.1.likes }},{% endfor %}],
-                backgroundColor: 'rgba(255, 99, 71, 0.5)',
-                borderColor: 'rgba(255, 99, 71, 1)',
+                backgroundColor: 'rgba(255, 0, 0, 0.5)', // Changed to red
+                borderColor: 'rgba(255, 0, 0, 1)', // Changed to red
                 borderWidth: 1
             }]
         };

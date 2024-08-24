@@ -4,53 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video ID Extractor</title>
-    
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/index_style.css' %}">
-
 </head>
 <body>
 
-<h1>YouTube Video ID Extractor</h1>
-<div class="container">
-    <form id="yt-form" action="/" method="post">
-        {% csrf_token %}
-        <label for="yt-url">Enter YouTube URL:</label>
-        <input type="text" id="yt-url" name="yt-url" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" required>
-        <div id="result">
-            <p>Video ID: <span id="display-video-id"></span></p>
-            <input type="hidden" id="video-id" name="video-id">
-        </div>
-        <button type="submit" id="lb" name="lb" value="on">See Top Comments</button>
-    </form>
-    <form action="/" method="get">
-        {% csrf_token %}
-        <button type="submit" id="mltv" name="mltv" value="on">Analyze Multi Video Comments</button>
-    </form>
-</div>
+    
+    {% if lda_html_content %}
+    <div id="lda-vis-container">
 
-<script>
-    document.getElementById('yt-form').addEventListener('submit', function(event) {
-        const url = document.getElementById('yt-url').value;
-        const videoId = extractVideoID(url);
+        {{ lda_html_content|safe }}
+        
+    </div>
 
-        if (videoId) {
-            document.getElementById('display-video-id').textContent = videoId;
-            document.getElementById('video-id').value = videoId;
-            document.getElementById('result').style.opacity = 1;
-        } else {
-            document.getElementById('display-video-id').textContent = "Invalid URL";
-            document.getElementById('result').style.opacity = 1;
-            event.preventDefault(); // Prevent form submission if URL is invalid
-        }
-    });
+    {% else %}
 
-    function extractVideoID(url) {
-        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        const match = url.match(regex);
-        return match ? match[1] : null;
+    <h1>YouTube Video ID Extractor</h1>
+    
+    <div class="container">
+        
+        <form id="yt-form" action="/" method="post">
+            {% csrf_token %}
+            <label for="yt-url">Enter YouTube URL:</label>
+            <input type="text" id="yt-url" name="yt-url" placeholder="https://www.youtube.com/watch?v=EVF_AuhJgLg" required>
+            
+            <div id="result">
+                <p>Video ID: <span id="display-video-id"></span></p>
+                <input type="hidden" id="video-id" name="video-id">
+            </div>
+
+            <button type="submit" id="lb" name="lb" value="on">See Top comments</button><br><br>
+
+           
+            
+        </form>
+        <form action="/" method="get">
+            {% csrf_token %}
+
+            <button type="submit" id="mltv" name="mltv" value="on">Analysis multi video comments</button>
+
+        </form>
+    </div>
+
+{% endif %}
+
+
+
+    <script>
+        document.getElementById('yt-form').addEventListener('submit', function(event) {
+    // event.preventDefault(); // Comment this out temporarily
+
+    const url = document.getElementById('yt-url').value;
+    const videoId = extractVideoID(url);
+
+    if (videoId) {
+        document.getElementById('display-video-id').textContent = videoId;
+        document.getElementById('video-id').value = videoId;
+
+        // Submit the form after setting the video ID
+        event.target.submit();
+    } else {
+        document.getElementById('display-video-id').textContent = "Invalid URL";
     }
-</script>
+});
+
+
+        function extractVideoID(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+    </script>
 
 </body>
 </html>

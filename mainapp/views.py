@@ -26,6 +26,15 @@ def index(request):
     rep_cnt = None
     graph_data = None  # Variable to hold graph data
     
+    if request.method == "POST":
+        if request.POST.get('lb'):
+            video_id = request.POST.get('video-id')
+            lrbd = list(get_data_lk(video_id))[:10]
+            
+            rep_cnt = list(get_data_rpc(video_id))[:10]
+            
+            return render(request, 'yt_leader_brd.html', {"lrbd": lrbd, "rep_cnt": rep_cnt})
+
     if request.GET.get('mltv'):
             return render(request, "multi_scraper.html")
     if request.POST.get('mltv'):

@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #000; /* Black background */
@@ -39,21 +39,6 @@ h1:before {
 
 h1:hover:before {
     transform: skewX(-20deg) translateX(100%);
-}
-
-h2 {
-    text-align: center;
-    color: #e63946; /* Red color for headings */
-    font-size: 2.5rem;
-    padding: 10px 20px;
-    background-color: rgba(34, 34, 34, 0.8); /* Semi-transparent dark background */
-    border: 2px solid #e63946;
-    border-radius: 10px;
-    display: inline-block;
-    position: relative;
-    margin: 20px auto;
-    box-shadow: 0 2px 10px rgba(255, 0, 0, 0.3); /* Red shadow */
-    animation: fadeIn 1.5s ease-in-out;
 }
 
 .container {
@@ -161,24 +146,23 @@ h2 {
 }
 
 .show-more-btn {
-background-color: #e63946; /* Red button */
-color: white;
-border: none;
-padding: 10px 20px; /* Adjust padding to fit text */
-cursor: pointer;
-border-radius: 5px;
-margin-top: 10px;
-width: 120px; /* Fixed width */
-height: 40px; /* Fixed height */
-text-align: center;
-transition: background-color 0.3s ease;
-font-size: 14px; /* Ensure text fits within the fixed size */
+    background-color: #e63946; /* Red button */
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Adjust padding to fit text */
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 120px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-size: 14px; /* Ensure text fits within the fixed size */
 }
 
 .show-more-btn:hover {
-background-color: #c53030; /* Darker red on hover */
+    background-color: #c53030; /* Darker red on hover */
 }
-
 
 canvas {
     margin-bottom: 20px;
@@ -188,4 +172,3 @@ canvas {
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
 }
-

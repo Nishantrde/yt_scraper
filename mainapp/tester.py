@@ -39,6 +39,7 @@ def scraper(vid):
     vid_info = {}
 
     for id in video_id:
+        l = 0
         while True:
             resp = get_comment(yt_scraper, id, next)
             if not resp:
@@ -48,7 +49,9 @@ def scraper(vid):
             if not next:
                 break
         print(f"Cmts fetched: {len(comments)}")
-        vid_info[id] = len(comments)
+        l = len(comments)
+        vid_info[id] = l
+        l = 0
 
 
     for comment in comments:

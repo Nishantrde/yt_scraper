@@ -81,4 +81,7 @@ def analy(request):
     # print(json_f)
     return render(request, "anayl.html", {"json_data" : json_f})
 
+def lda_vis(request):
+     return render(request, "lda_vis.html")
+
 

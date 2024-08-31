@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #e0e0e0;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            background: linear-gradient(135deg, #2b110c, #0e0907);
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            font-size: 3em;
+            letter-spacing: 1.5px;
+            border: 4px solid #130805;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: headingAnim 2s forwards; 
+            text-align: center;
+        }
+
+        h1:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 99, 71, 0.6), rgba(255, 69, 0, 0.6));
+            z-index: -1;
+            transform: skewX(-20deg) translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        h1:hover:before {
+            transform: skewX(-20deg) translateX(100%);
+        }
+
+        .instructions {
+            text-align: center;
+            background-color: #1e1e1e;
+            color: #f5a623;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 2px dashed #ff4b5c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .comment-section {
+            background-color: #1e1e1e;
+            border: 2px solid #ff4b5c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .comment--section {
+            background-color: #1e1e1e;
+            border: 2px solid #ff4b5c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .comment--section:hover {
+            transform: scale(1.03);
+            border-color: #f5a623;
+        }
+
+        .comment-header {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #ff4b5c;
+        }
+
+        .keyword-list {
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #f5a623;
+        }
+
+        .comment-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .comment-list li {
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .show-more {
+            cursor: pointer;
+            color: #f5a623;
+            text-decoration: underline;
+        }
+
+        .full-comment {
+            display: none;
+        }
+
+        .scroll-to-top-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #e0e0e0;
+            background-color: #ff4b5c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            align-items: end;
+        }
+
+        .scroll-to-top-button:hover {
+            background-color: #f5a623;
+        }
+        .graph-container {
+    width: 1300px; /* Adjust width as needed */
+    height: 600px; /* Adjust height as needed */
+    margin: 0 auto; /* Center the graph horizontally */
+}
+
+    </style>
+</head>
+<body>
+
+<h1>Comments Analysis</h1>
+
+<div class="instructions">
+    📊 Double-click on a bar in the chart below to jump to the corresponding comments set.
+</div>
+
+<div class="graph-container">
+    <canvas id="commentsGraph"></canvas>
+</div><br>
+
+{% for key, value in json_data.items %}
+    <div class="comment-section" id="set-{{ forloop.counter0 }}">
+        <div class="comment-header">Comments Set {{ key }} (Size: {{ value|length }})<button class="scroll-to-top-button" onclick="scrollToTop()">Go to Graph</button></div>
+            
+        <p class="keyword-list">Top Keywords: {{ value.0|join:", " }}</p>
+        <ul class="comment-list">
+            {% for comment in value|slice:"1:" %}
+            <div class="comment--section">
+                <li class="comment-item">
+                    <span class="truncated-comment">{{ comment|truncatewords:20 }}</span><br>
+                    {% if comment|length > 20 %}
+                        <span class="show-more" onclick="toggleShowMore(this)">show more</span>
+                        <span class="full-comment">{{ comment }}</span>
+                    {% endif %}
+                </li>
+            </div>
+            {% endfor %}
+        </ul>
+        
+    </div>
+{% endfor %}
+
+<script>
+    const ctx = document.getElementById('commentsGraph').getContext('2d');
+    const data = {
+        labels: [{% for key in json_data.keys %}'Set {{ key }}',{% endfor %}],
+        datasets: [{
+            label: 'Number of Comments per Set',
+            data: [{% for key, value in json_data.items %}{{ value|length }},{% endfor %}],
+            backgroundColor: 'rgba(255, 75, 92, 0.2)',
+            borderColor: 'rgba(255, 75, 92, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const chartElement = elements[0];
+                    const datasetIndex = chartElement.datasetIndex;
+                    const index = chartElement.index;
+
+                    console.log(`Clicked on Dataset Index: ${datasetIndex}, Index: ${index}`);
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#e0e0e0'
+                    },
+                    grid: {
+                        color: 'rgba(255, 75, 92, 0.3)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#e0e0e0'
+                    },
+                    grid: {
+                        color: 'rgba(255, 75, 92, 0.3)'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: (tooltipItems) => {
+                            const item = tooltipItems[0];
+                            const setNumber = item.label.split(' ')[1];
+                            const keywords = {% for key, value in json_data.items %}item.label === 'Set {{ key }}' ? '{{ value.0|join:", " }}' : {% endfor %}'';
+                            return 'Set ' + setNumber + ': ' + keywords;
+                        },
+                        label: (tooltipItem) => {
+                            return 'Comments: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const chart = new Chart(ctx, config);
+
+    ctx.canvas.addEventListener('dblclick', function(event) {
+        const elements = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+
+        if (elements.length > 0) {
+            const index = elements[0].index;
+            scrollToSet(index);
+        }
+    });
+
+    function scrollToSet(setIndex) {
+        const setId = `set-${setIndex}`;
+        const setElement = document.getElementById(setId);
+        if (setElement) {
+            setElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    function toggleShowMore(element) {
+        const li = element.parentElement;
+        const truncatedComment = li.querySelector('.truncated-comment');
+        const fullComment = li.querySelector('.full-comment');
+        if (element.textContent.trim() === "show more") {
+            truncatedComment.style.display = "none";
+            fullComment.style.display = "block";
+            element.textContent = "show less";
+        } else {
+            truncatedComment.style.display = "block";
+            fullComment.style.display = "none";
+            element.textContent = "show more";
+        }
+    }
+
+    function scrollToTop() {
+        document.querySelector('.graph-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+</script>
+
+</body>
+</html>

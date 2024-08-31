@@ -5,6 +5,7 @@ from .multi_vid_cmt_scpr import *
 from .tester import scraper
 from collections import Counter
 import json
+from .json_fl import *
 
 def calculate_user_frequencies(lrbd, rep_cnt):
     users = []
@@ -75,3 +76,9 @@ def index(request):
             })
 
     return render(request, "index.html")
+
+def analy(request):
+    # print(json_f)
+    return render(request, "anayl.html", {"json_data" : json_f})
+
+

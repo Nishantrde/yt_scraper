@@ -84,8 +84,8 @@ def analy(request):
 def top_analy(request):
     categories = list(json_f_top_30.keys())
     frequencies = [json_f_top_30[category]['frequency'] for category in categories]
-    comments = {category: json_f_top_30[category]['comments'] for category in categories}
-
+    comments = {category: json_f_top_30[category]['comments'][:int(len(json_f_top_30[category]['comments'])*(50/100))] for category in categories}
+    print(comments)
     context = {
         'categories': categories,
         'frequencies': frequencies,

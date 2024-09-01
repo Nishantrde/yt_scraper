@@ -141,6 +141,18 @@
     margin: 0 auto; /* Center the graph horizontally */
 }
 
+.thumbnail-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .thumbnail-container img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        
+
     </style>
 </head>
 <body>
@@ -154,7 +166,11 @@
 <div class="graph-container">
     <canvas id="commentsGraph"></canvas>
 </div><br>
+<div class="thumbnail-container">
+    <img src="https://img.youtube.com/vi/-IiFM5teHcU/maxresdefault.jpg" alt="Thumbnail" style="width: 700px; height: auto;">
+</div>
 
+<a href="https://www.youtube.com/watch?v=-IiFM5teHcU">Video URL</a>
 {% for key, value in json_data.items %}
     <div class="comment-section" id="set-{{ forloop.counter0 }}">
         <div class="comment-header">Comments Set {{ key }} (Size: {{ value|length }})<button class="scroll-to-top-button" onclick="scrollToTop()">Go to Graph</button></div>

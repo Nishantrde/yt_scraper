@@ -6,49 +6,264 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graph of Frequencies</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Set the overall background and text color */
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #ff3b3f;
+            text-align: center;
+        }
+
+        /* Style for the Chart container */
+        .frequency_Chart {
+            width: 100%;
+            max-width: 1600px;
+            height: 700px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #1e1e1e;
+            border: 2px solid #ff3b3f;
+            border-radius: 10px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 250px;
+        }
+
+        h3 {
+            color: #ff3b3f;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #1e1e1e;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 5px solid #ff3b3f;
+            position: relative;
+            width: 1780px;
+        }
+
+        .back-to-graph {
+            margin: 15px 0;
+            padding: 10px 20px;
+            background-color: #ff3b3f;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: auto;
+
+        }
+
+        .back-to-graph:hover {
+            background-color: #e63946;
+        }
+
+        .toggle-comment {
+            color: #ff3b3f;
+            cursor: pointer;
+            margin-left: 10px;
+            text-decoration: underline;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #2b110c, #0e0907);
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            font-size: 3em;
+            letter-spacing: 1.5px;
+            border: 4px solid #130805;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: headingAnim 2s forwards; 
+            text-align: center;
+        }
+
+        h1:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 99, 71, 0.6), rgba(255, 69, 0, 0.6));
+            z-index: -1;
+            transform: skewX(-20deg) translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        h1:hover:before {
+            transform: skewX(-20deg) translateX(100%);
+        }
+
+        h2 {
+            background: linear-gradient(135deg, #2b110c, #0e0907);
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            font-size: 2em;
+            letter-spacing: 1.5px;
+            border: 4px solid #130805;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: headingAnim 2s forwards;
+            text-align: left;
+            margin-right: auto;
+        }
+
+        h2:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 99, 71, 0.6), rgba(255, 69, 0, 0.6));
+            z-index: -1;
+            transform: skewX(-20deg) translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        h2:hover:before {
+            transform: skewX(-20deg) translateX(100%);
+        }
+    </style>
 </head>
 <body>
     <h1>Graph of Frequencies</h1>
 
     <!-- Canvas for the Chart -->
-    <canvas id="frequencyChart" width="400" height="200"></canvas>
+    <div class="frequency_Chart">
+        <canvas id="frequencyChart"></canvas>
+    </div>
+    
     <script>
         var ctx = document.getElementById('frequencyChart').getContext('2d');
+        var categories = {{ categories|safe }};
+        var frequencies = {{ frequencies|safe }};
+        
         var frequencyChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: {{ categories|safe }},
+                labels: categories,
                 datasets: [{
                     label: 'Frequency',
-                    data: {{ frequencies|safe }},
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
+                    data: frequencies,
+                    backgroundColor: 'rgba(255, 59, 63, 0.5)',
+                    borderColor: 'rgba(255, 59, 63, 1)',
+                    borderWidth: 2
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
+                    x: {
+                        ticks: { color: '#FFFFFF' },
+                        grid: { color: 'rgba(255, 59, 63, 0.2)' }
+                    },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: { color: '#FFFFFF' },
+                        grid: { color: 'rgba(255, 59, 63, 0.2)' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF'
+                        }
                     }
                 }
             }
         });
+
+        // Add event listener for double-click (dblclick)
+        document.getElementById('frequencyChart').addEventListener('dblclick', function(e) {
+            const points = frequencyChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                const label = frequencyChart.data.labels[firstPoint.index];
+                const targetElement = document.getElementById(label);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        function scrollToGraph() {
+            const chartElement = document.querySelector('.frequency_Chart');
+            chartElement.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleCommentDetail(commentId) {
+            const commentElement = document.getElementById('comment-' + commentId);
+            const moreText = commentElement.querySelector('.more-text');
+            const toggleLink = commentElement.querySelector('.toggle-comment');
+
+            if (moreText.style.display === 'none' || moreText.style.display === '') {
+                moreText.style.display = 'inline';
+                toggleLink.textContent = 'Show Less';
+            } else {
+                moreText.style.display = 'none';
+                toggleLink.textContent = 'Show More';
+            }
+        }
     </script>
 
-    <h2>Comments</h2>
+    <h1>Comments</h1>
 
     <!-- Display Comments -->
     {% for category, comments in comments.items %}
-        <h3>{{ category }}</h3>
-        <ul>
-            {% for comment in comments %}
-                <li>{{ comment }}</li>
-            {% endfor %}
-        </ul>
+        <h2 id="{{ category }}">{{ category }}</h2><button class="back-to-graph" onclick="scrollToGraph()">Back to Graph</button>
+
+        <!-- Comments Section -->
+        <div>
+            <ul>
+                {% for comment in comments %}
+                    <li id="comment-{{ forloop.counter }}">
+                        {{ comment|slice:":250" }} <!-- Display first 100 characters -->
+                        {% if comment|length > 250 %}
+                            <span class="more-text" style="display: none;">{{ comment|slice:"100:" }}</span>
+                            <a href="javascript:void(0);" class="toggle-comment" onclick="toggleCommentDetail('{{ forloop.counter }}')">Show More</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <!-- "Back to Graph" button -->
+            
+        </div>
     {% endfor %}
 </body>
 </html>
-
-
-

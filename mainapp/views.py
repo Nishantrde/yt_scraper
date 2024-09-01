@@ -81,7 +81,22 @@ def analy(request):
     # print(json_f)
     return render(request, "anayl.html", {"json_data" : json_f})
 
+def top_analy(request):
+    categories = list(json_f_top_30.keys())
+    frequencies = [json_f_top_30[category]['frequency'] for category in categories]
+    comments = {category: json_f_top_30[category]['comments'] for category in categories}
+
+    context = {
+        'categories': categories,
+        'frequencies': frequencies,
+        'comments': comments,
+    }
+
+    
+    return render(request, "top_analy.html", context)
+
+
 def lda_vis(request):
-     return render(request, "lda_vis.html")
+    return render(request, "lda_vis.html")
 
 

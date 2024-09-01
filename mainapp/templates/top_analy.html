@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph of Frequencies</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Graph of Frequencies</h1>
+
+    <!-- Canvas for the Chart -->
+    <canvas id="frequencyChart" width="400" height="200"></canvas>
+    <script>
+        var ctx = document.getElementById('frequencyChart').getContext('2d');
+        var frequencyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ categories|safe }},
+                datasets: [{
+                    label: 'Frequency',
+                    data: {{ frequencies|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <h2>Comments</h2>
+
+    <!-- Display Comments -->
+    {% for category, comments in comments.items %}
+        <h3>{{ category }}</h3>
+        <ul>
+            {% for comment in comments %}
+                <li>{{ comment }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
+
+
+

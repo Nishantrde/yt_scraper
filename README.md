@@ -1,6 +1,7 @@
 
 # YouTube Comments Scraper and Analyzer Documentation
 ![Screenshot](https://res.cloudinary.com/dbrvducfo/image/upload/v1743337769/Screenshot_2025-03-30_175753_fahhwa.png)
+![Screenshot 2](https://res.cloudinary.com/dbrvducfo/image/upload/v1743337908/Screenshot_2025-03-30_175845_v2nl5y.png)
 
 ## 📜 Overview
 This document provides an overview and code details for the Django-based YouTube comments scraper and analyzer application. The system facilitates:
